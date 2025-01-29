@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+ 
+ {% block content %}
+   <!-- Main Content -->
+   edit-profile.html
+  <section class="flex-1 mx-4">
+    <div class="bg-white shadow-lg rounded-lg p-6">
+      <h2 class="text-2xl font-bold mb-4">Edit Profile</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- User Form Fields -->
+        <div class="mb-4">
+          <label for="id_first_name" class="block text-gray-700 text-sm font-bold mb-2">First Name</label>
+          {{ user_form.first_name }}
+        </div>
+  
+        <div class="mb-4">
+          <label for="id_last_name" class="block text-gray-700 text-sm font-bold mb-2">Last Name</label>
+          {{ user_form.last_name }}
+        </div>
+  
+        <div class="mb-4">
+          <label for="id_username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+          {{ user_form.username }}
+        </div>
+  
+        <!-- Profile Form Fields -->
+        <div class="mb-4">
+          <label for="id_profile_pic" class="block text-gray-700 text-sm font-bold mb-2">Profile Picture</label>
+          <div class="flex items-center">
+            {% if profile.profile_pic %}
+              <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" class="rounded-full w-16 h-16 mr-4">
+            {% endif %}
+            {{ profile_form.profile_pic }}
+          </div>
+        </div>
+  
+        <div class="mb-4">
+          <label for="id_country" class="block text-gray-700 text-sm font-bold mb-2">Country</label>
+          {{ profile_form.country }}
+        </div>
+  
+        <div class="mb-4">
+          <label for="id_bio" class="block text-gray-700 text-sm font-bold mb-2">Bio</label>
+          {{ profile_form.bio }}
+        </div>
+
+        <!-- Gender Field -->
+        <div class="mb-4">
+          <label for="id_gender" class="block text-gray-700 text-sm font-bold mb-2">Gender</label>
+          {{ profile_form.gender }}
+        </div>
+  
+        <!-- Save Changes Button -->
+        <div class="mt-6">
+          <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 font-bold">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+
+  <script>
+    // Toggle dropdown visibility
+    document.getElementById('menu-button').addEventListener('click', function() {
+      const dropdown = document.getElementById('dropdown-menu');
+      dropdown.classList.toggle('hidden');
+    });
+  
+    // Handle gender selection
+    document.getElementById('male').addEventListener('click', function() {
+      const selectedGender = this.textContent; // Get text content of selected option
+      document.getElementById('selected-gender').textContent = 'Selected: ' + selectedGender;
+      document.getElementById('dropdown-menu').classList.add('hidden'); // Hide dropdown
+    });
+  
+    document.getElementById('female').addEventListener('click', function() {
+      const selectedGender = this.textContent; // Get text content of selected option
+      document.getElementById('selected-gender').textContent = 'Selected: ' + selectedGender;
+      document.getElementById('dropdown-menu').classList.add('hidden'); // Hide dropdown
+    });
+  </script>
+  
+ {% endblock content %}
+  
+
+{% include 'mobile.html' %}

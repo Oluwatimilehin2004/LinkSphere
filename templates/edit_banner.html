@@ -1,0 +1,67 @@
+<!-- edit_banner.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
+        <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">Edit Banner</h2>
+        
+        <!-- Banner Preview -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Banner Preview</label>
+            <div id="banner-preview" class="w-full h-48 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                {% if profile.banner %}
+                    <img src="{{ profile.banner.url }}" alt="Current Banner" class="w-full h-full object-cover" id="current-banner">
+                {% else %}
+                    <span class="text-gray-500">No banner uploaded</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Banner Upload Form -->
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- File Input -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Upload New Banner</label>
+                <input type="file" name="banner" id="id_banner" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Update Banner
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript for Image Preview -->
+<script>
+    document.getElementById('id_banner').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const previewDiv = document.getElementById('banner-preview');
+        const currentBanner = document.getElementById('current-banner');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (currentBanner) {
+                    currentBanner.src = e.target.result;
+                } else {
+                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">`;
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            if (currentBanner) {
+                currentBanner.src = "{{ profile.banner.url }}";
+            } else {
+                previewDiv.innerHTML = '<span class="text-gray-500">No banner uploaded</span>';
+            }
+        }
+    });
+</script>
+{% endblock %}

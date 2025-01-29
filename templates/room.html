@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white shadow-lg rounded-lg w-full max-w-md">
+        <div class="p-6 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-800">Chat with {{ recipient_username }}</h1>
+        </div>
+        <div id="chat-log" class="p-6 h-96 overflow-y-auto">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="p-6 border-t border-gray-200">
+            <div class="flex space-x-4">
+                <input id="chat-message-input" type="text" placeholder="Type your message" 
+                       class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="chat-message-submit" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const roomName= 'BrosP'
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const chatLog = document.querySelector('#chat-log');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('mb-4');
+            messageElement.innerHTML = `
+                <span class="font-bold text-blue-600">${data.sender}:</span>
+                <span class="text-gray-700">${data.message}</span>
+            `;
+            chatLog.appendChild(messageElement);
+            chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll to the latest message
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        // Add event listener to the button
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInput = document.querySelector('#chat-message-input');
+            const message = messageInput.value;
+
+            if (message) {
+                // Send the message via WebSocket
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'recipient': '{{ recipient_username }}'  // Use the recipient username from the template
+                }));
+                messageInput.value = ''; // Clear the input field
+            }
+        };
+
+        // Optional: Send message on pressing Enter key
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // Enter key
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+    </script>
+
+{% include 'mobile.html' %}
+{% endblock content %}

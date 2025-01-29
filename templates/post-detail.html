@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="container mx-auto px-4 pt-20 flex">
+  <!-- Left Sidebar (Navigation) -->
+  <aside class="w-[15%] bg-white shadow-lg p-4 hidden lg:block">
+    <h2 class="font-bold text-lg mb-4">Menu</h2>
+    <ul>
+      <li class="mb-2"><a href="{% url 'feeds' %}" class="text-gray-700 hover:text-blue-500">Home</a></li>
+      <li class="mb-2"><a href="{% url 'profile' user.id %}" class="text-gray-700 hover:text-blue-500">Profile</a></li>
+      <li class="mb-2"><a href="#" class="text-gray-700 hover:text-blue-500">Messages</a></li>
+      <li class="mb-2"><a href="{% url 'delete_acc' user.id %}" class="text-gray-700 hover:text-blue-500">Settings</a></li>
+    </ul>
+  </aside>
+
+  <!-- Post Details Section -->
+  <section class="flex-1 mx-4 scrollable-comments">
+    <div class="bg-white shadow-lg rounded-lg p-6">
+      <!-- Post Header -->
+      <div class="bg-white shadow-lg rounded-lg p-4">
+        <a href="{% url 'profile' post.author.id %}">
+          <div class="flex items-center mb-4">
+            <!-- Author Profile Picture -->
+            {% if post.author.profile.profile_pic %}
+              <img src="{{ post.author.profile.profile_pic.url }}" alt="User" class="rounded-full w-12 h-12">
+            {% else %}
+              <img src="{{ post.author.profile.get_profile_picture }}" alt="User" class="rounded-full w-12 h-12">
+            {% endif %}
+            <div class="ml-2">
+              <!-- Author Username -->
+              <p class="font-bold">{{ post.author.username }}</p>
+              <!-- Post Creation Time -->
+              <p class="text-sm text-gray-500">{{ post.created_at | timesince }} ago</p>
+            </div>
+          </div>
+        </a>
+
+        <!-- Post Content -->
+        <p class="mb-4">{{ post.content }}</p>
+
+        <!-- Post Image -->
+        {% if post.post_img %}
+          <img src="{{ post.post_img.url }}" alt="Post Image" class="w-full rounded-lg mb-4">
+        {% endif %}
+
+        <!-- Like and Comment Buttons -->
+        <div class="flex items-center mb-4 justify-between">
+          <div class="flex">
+            <!-- Like Button -->
+            <form action="{% url 'like_post' post.id %}" method="POST">
+              {% csrf_token %}
+              <button class="flex items-center text-gray-500 hover:text-blue-500">
+                {% if request.user in post.likes.all %}
+                  <span class="mr-2 text-red-500">👍</span> {{ post.likes.count }} Likes
+                {% else %}
+                  <span class="mr-2">👍</span> {{ post.likes.count }} Likes
+                {% endif %}
+              </button>
+            </form>
+            <!-- Comment Button -->
+            <button class="ml-4 flex items-center text-gray-500 hover:text-blue-500">
+              <span class="mr-2">💬</span> {{ post.comments.count }} Comments
+            </button>
+          </div>
+          <!-- Edit and Delete Buttons (for post author) -->
+          {% if request.user == post.author %}
+            <div class="flex ml-2">
+              <a href="{% url 'edit_post' post.id %}" class="mr-2 text-gray-500">Edit</a>
+              <a href="{% url 'delete_post' post.id %}" class="mr-2 text-gray-500">Delete</a>
+            </div>
+            {% endif %}
+            <a href="{% url 'feeds' %}" class="mr-2 text-gray-500">Back</a>
+        </div>
+
+        <!-- Comment Box -->
+        <div class="mb-4">
+          <form action="{% url 'add_comment' post.id %}" method="post">
+            {% csrf_token %}
+            <textarea name="comment" placeholder="Write a comment..." class="w-full p-2 border rounded-lg"></textarea>
+            <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Comment</button>
+          </form>
+        </div>
+
+        <!-- Comments -->
+        <div class="space-y-2">
+          {% for comment in post.comments.all %}
+            <div class="flex items-center">
+              <!-- Comment Author Profile Picture -->
+              {% if comment.author.profile.profile_pic %}
+                <img src="{{ comment.author.profile.profile_pic.url }}" alt="User" class="rounded-full w-12 h-12">
+              {% else %}
+                <img src="{{ comment.author.profile.get_profile_picture }}" alt="User" class="rounded-full w-12 h-12">
+              {% endif %}
+              <div class="ml-2">
+                <!-- Comment Author Username -->
+                <p class="font-bold">
+                  <a href="{% url 'profile' comment.author.id %}">{{ comment.author.username }}</a>
+                  <span class="text-sm text-gray-500">{{ comment.created_at | timesince }} ago</span>
+                </p>
+                <!-- Comment Content -->
+                <p class="text-sm text-gray-500">{{ comment.content }}</p>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-gray-500">No comments yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Right Sidebar (Friends List) -->
+  <div class="w-[30%] bg-white shadow-lg p-4 hidden lg:block">
+    <h2 class="font-bold text-lg mb-4">Friends</h2>
+    <div class="space-y-2">
+      {% for follower in followers %}
+        <div class="flex items-center p-4 rounded-sm shadow-md m-2">
+          <a href="{% url 'profile' follower.follower.id %}" class="flex items-center text-gray-500 hover:text-blue-300 w-12 h-12">
+            {% if follower.follower.profile.profile_pic %}
+              <img src="{{ follower.follower.profile.profile_pic.url }}" alt="Friend" class="rounded-full w-12 h-12">
+            {% endif %}
+            <p class="ml-2">{{ follower.follower.username }}</p>
+          </a>
+        </div>
+      {% empty %}
+        <p class="text-gray-500">No friends found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+
+{% include 'mobile.html' %}
+{% endblock content %}

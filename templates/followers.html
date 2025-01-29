@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="container mx-auto px-4 pt-20 flex">
+  <!-- Left Sidebar (Navigation) -->
+  <aside class="w-[15%] bg-white shadow-lg p-4 hidden lg:block">
+    <h2 class="font-bold text-lg mb-4">Menu</h2>
+    <ul>
+      <li class="mb-2"><a href="{% url 'feeds' %}" class="text-gray-700 hover:text-blue-500">Home</a></li>
+      <li class="mb-2"><a href="{% url 'profile' user.id %}" class="text-gray-700 hover:text-blue-500">Profile</a></li>
+      <li class="mb-2"><a href="#" class="text-gray-700 hover:text-blue-500">Messages</a></li>
+      <li class="mb-2"><a href="{% url 'delete_acc' user.id %}" class="text-gray-700 hover:text-blue-500">Settings</a></li>
+    </ul>
+  </aside>
+
+  <!-- Friends/Followers Section -->
+  <section class="flex-1 mx-4 scrollable-friends">
+    <div class="bg-white shadow-lg rounded-lg p-6">
+      <h2 class="text-2xl font-bold mb-4">Followers</h2>
+      <!-- Followers List -->
+      <div class="space-y-2">
+        {% for follower in followers %}
+          <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg">
+            <!-- Follower Profile Picture -->
+            {% if follower.follower.profile.profile_pic %}
+              <img src="{{ follower.follower.profile.profile_pic.url }}" alt="Follower" class="rounded-full w-10 h-10">
+            {% else %}
+              <img src="{{ follower.follower.profile.get_profile_picture }}" alt="Follower" class="rounded-full w-10 h-10">
+            {% endif %}
+            <div class="ml-2">
+              <!-- Follower Username -->
+              <p class="font-bold">{{ follower.follower.username }}</p>
+              <!-- Follower Email (Optional) -->
+              <p class="text-sm text-gray-500">{{ follower.follower.email }}</p>
+            </div>
+            <!-- Follow/Unfollow Button -->
+            <div class="ml-auto">
+              <form method="post" action="{% url 'follow_unfollow' follower.follower.id %}">
+                {% csrf_token %}
+                {% if request.user in follower.follower.followers.all %}
+                  <button type="submit" name="action" value="unfollow" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    Unfollow
+                  </button>
+                {% else %}
+                  <button type="submit" name="action" value="follow" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    Follow
+                  </button>
+                {% endif %}
+              </form>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-gray-500">No followers found.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Right Sidebar (Friends List) -->
+  <div class="w-[30%] bg-white shadow-lg p-4 hidden lg:block">
+    <h2 class="font-bold text-lg mb-4">Friends</h2>
+    <div class="space-y-2">
+      {% for follower in followers %}
+        <div class="flex items-center p-4 rounded-sm shadow-md m-2">
+          <a href="{% url 'profile' follower.follower.id %}" class="flex items-center text-gray-500 hover:text-blue-300 w-12 h-12">
+            {% if follower.follower.profile.profile_pic %}
+              <img src="{{ follower.follower.profile.profile_pic.url }}" alt="Friend" class="rounded-full w-12 h-12">
+            {% endif %}
+            <p class="ml-2">{{ follower.follower.username }}</p>
+          </a>
+        </div>
+      {% empty %}
+        <p class="text-gray-500">No friends found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+
+{% include 'mobile.html' %}
+{% endblock content %}

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 pt-20">
+      <!-- Profile Banner -->
+      
+      {% if user.profile.banner %}
+      <div class="relative h-64 bg-cover bg-center" style="background-image: url('{{user.profile.banner.url}}');">
+      {% else %}
+      <div class="relative h-64 bg-cover bg-center" style="background-image: url('{{user.profile.banner.default}}');">
+      {% endif %}
+        
+      <!-- Edit Banner Button -->
+      
+      {% if request.user == user %}
+      <a href="{% url 'edit_banner' %}">
+        <button class="absolute bottom-4 right-4 px-4 py-2 bg-white text-gray-700 rounded-lg shadow hover:bg-gray-100">
+          Edit Banner
+        </button>   
+      </a> 
+      {% endif %}
+             
+    </div>
+  
+      <!-- Profile Section -->
+      <div class="flex mt-4">
+        <!-- Left Sidebar (Profile Info) -->
+        <aside class="w-64 bg-white shadow-lg p-4 hidden lg:block">
+          <!-- Profile Picture -->
+          <div class="text-center">
+           
+           {% if user.profile.profile_pic %}
+           <img src="{{user.profile.profile_pic.url }}" alt="Profile Picture" class="rounded-full mx-auto w-20 h-20">
+           {% endif %}
+            
+            <h2 class="text-xl font-bold mt-2">{{user.first_name}} {{user.last_name}}</h2>
+            <p class="text-gray-500">{{user.username}}</p>
+          </div>
+
+          <!-- followers count -->
+           <div class="mt-4 flex justify-center space-x-14">
+            <div>
+              <p class="font-bold text-center">{{followers.count}}</p>
+              <a href="{% url 'followers_page' %}" class="text-sm text-gray-500">Followers</a>
+            </div>
+            <div>
+              <p class="font-bold text-center">{{following.count}}</p>
+              <a href="#" disabled class="text-sm text-gray-500">Following</a>
+            </div>
+           </div>
+          <!-- Edit Profile Button -->
+          
+        
+            <div class="mt-0">
+              <div class="p-2 space-x-2 w-full flex justify-center">
+                <!-- Follow/Unfollow Buttons -->
+                {% if request.user != user %}
+                <div class="flex space-x-4">
+                    <!-- Follow Button -->
+                    <form method="post" action="{% url 'follow_unfollow' user.id %}">
+                        {% csrf_token %}
+                        <button
+                            type="submit"
+                            name="action"
+                            value="follow"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                            {% if request.user in followers %} disabled class="opacity-50 cursor-not-allowed" {% endif %}
+                        >
+                            Follow
+                        </button>
+                    </form>
+
+                    <!-- Unfollow Button -->
+                    <form method="post" action="{% url 'follow_unfollow' user.id %}">
+                        {% csrf_token %}
+                        <button
+                            type="submit"
+                            name="action"
+                            value="unfollow"
+                            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                            {% if request.user not in followers %} disabled class="opacity-50 cursor-not-allowed" {% endif %}
+                        >
+                            Unfollow
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+              </div>
+    
+              
+              {% if request.user == user %}
+              <a href="{% url 'edit_profile' user.id %}">
+                <button class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                  Edit Profile
+                </button>
+              </a>
+              {% else %}
+              {% endif %}
+                
+            </div>
+         
+            
+          <!-- Profile Details -->
+          <div class="mt-4">
+            <h3 class="font-bold text-lg">Details</h3>
+            <ul class="mt-2">
+              <li class="mb-2">📍 {{user.profile.country}}</li>
+              <li class="mb-2">💼 {{user.profile.bio}}</li>
+              <li class="mb-2">🎓 {{user.profile.gender}}</li>
+            </ul>
+          </div>
+        </aside>
+  
+        <!-- Scrollable Profile Posts -->
+        <section class="flex-1 mx-4 scrollable-content">
+         
+  
+          <!-- Recent Posts -->
+          <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-4">Recent Posts</h2>
+            <!-- Post 1 -->
+            {% for post in posts %}
+            <div class="mb-4">
+              <div class="flex items-center mb-2">
+                
+                {% if post.author.profile.profile_pic %}
+                  <img src="{{post.author.profile.profile_pic.url}}" alt="User" class="rounded-full w-12 h-12">
+                {% else %}
+                  <img src="https://placehold.co/100x100" alt="User" class="rounded-full w-12 h-12">
+                {% endif %}
+                <div class="ml-2">
+                  <p class="font-bold">{{post.author.username}}</p>
+                  <p class="text-sm text-gray-500">{{post.created_at| timesince}}</p>
+                </div>
+              </div>
+              <p class="text-gray-700 mb-2">{{post.content}}</p>
+              
+              {% if post.post_img %}
+              <img src="{{post.post_img.url}}" alt="Post Image" class="w-full rounded-lg mb-2" width="250">
+              {% else %}
+              
+              {% endif %}
+                
+              <div class="flex items-center mb-4 justify-between">
+                <div class="flex">
+                  <form action="{% url 'like_post' post.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="flex items-center text-gray-500 hover:text-blue-500">
+                     
+                     {% if request.user in post.likes.all %}
+                     <span class="mr-2 text-red-500">👍</span> {{ post.likes.count }} Likes
+                     {% else %}
+                     <span class="mr-2 text-black-300">👍</span> {{ post.likes.count }} Likes
+                     {% endif %}
+                      
+                    </button>
+                  </form>
+                    <button class="ml-4 flex items-center text-gray-500 hover:text-blue-500">
+                      <span class="mr-2">💬</span> {{ post.comments.count }} Comments
+                    </button>
+                </div>
+                <div> 
+                {% if request.user == post.author %}
+                <a href="{% url 'edit_post' post.id %}" class="mr-2 text-gray-500">Edit</a>
+                <a href="{% url 'delete_post' post.id %}" class="mr-2 text-gray-500">Delete</a>
+                {% endif %}
+                    
+                </div>
+              </div>
+            <!-- Comment Box -->
+            <div class="mb-4">
+              <form action="{% url 'add_comment' post.id %}" method="post">
+                {% csrf_token %}
+                <textarea name="comment" placeholder="Write a comment..." class="w-full p-2 border rounded-lg"></textarea>
+                <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Comment</button>
+              </form>
+            </div>
+            <!-- Comments -->
+            <div class="space-y-2">
+            {% for comment in post.comments.all %}
+              <div class="flex items-center">
+                <img src="{{comment.author.profile.profile_pic.url}}" alt="User" class="rounded-full w-12 h-12">
+                <div class="ml-2">
+                  <p class="font-bold"><a href="{% url 'profile' comment.author.id %}">{{comment.author.username}}</a> <span class="text-sm text-gray-500">{{comment.created_at | timesince}} ago</span></p>
+                  <p class="text-sm text-gray-500">{{comment.content}}</p>
+                </div>
+              </div>
+            {% endfor %}
+            {% endfor %}      
+          </div> 
+          </div>
+        </div>
+        </section>
+      </div>
+    </main>
+{% endblock content %}
+  
+
+{% include 'mobile.html' %}

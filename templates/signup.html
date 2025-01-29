@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - SocialApp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Header -->
+  <header class="bg-white shadow fixed w-full z-10">
+    <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <img src="https://placehold.co/40x40" alt="Logo" class="rounded-full">
+        <span class="ml-2 font-bold text-xl">SocialApp</span>
+      </div>
+      <!-- Navigation -->
+      <div>
+        <a href="{% url 'signin' %}" class="text-gray-700 hover:text-blue-500">Login</a>
+      </div>
+    </div>
+  </header>
+
+<!-- messages -->
+{% if messages %}
+   <div class="container mx-auto px-4 pt-20">
+      {% for message in messages %}
+          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+              {{ message }}
+          </div>
+      {% endfor %}
+   </div>
+{% endif %} 
+
+  <!-- Main Content -->
+  <main class="flex items-center justify-center h-screen">
+    <div class="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
+      <!-- Signup Form -->
+      <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+      <form method="post">
+        {% csrf_token %}
+        <!-- Name Input -->
+        <div class="mb-4">
+          <label for="first_name" class="block text-gray-700 text-sm font-bold mb-2">First Name</label>
+          <input type="text" id="name" name="first_name" placeholder="Enter your first_name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
+        </div>
+        <!-- last_name Input -->
+        <div class="mb-4">
+          <label for="last_name" class="block text-gray-700 text-sm font-bold mb-2">Last Name</label>
+          <input type="text" id="name" name="last_name" placeholder="Enter your last name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
+        </div>
+        <!-- Name Input -->
+        <div class="mb-4">
+          <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+          <input type="text" id="name" name="username" placeholder="Enter your username" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
+        </div>
+        <!-- Email Input -->
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
+        </div>
+        <!-- Password Input -->
+        <div class="mb-4">
+          <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
+        </div>
+        <!-- Confirm Password Input -->
+        <div class="mb-4">
+          <label for="confirm-password" class="block text-gray-700 text-sm font-bold mb-2">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
+        </div>
+        <!-- Signup Button -->
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 font-bold">Sign Up</button>
+      </form>
+      <!-- Login Link -->
+      <p class="text-center mt-4 text-sm">
+        Already have an account? 
+        <a href="{% url 'signin' %}" class="text-blue-500 hover:underline">Login</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-4 mt-20">
+    <div class="container mx-auto px-4 text-center">
+      <p>&copy; 2023 SocialApp. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

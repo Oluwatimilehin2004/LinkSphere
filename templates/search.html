@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="container mx-auto px-4 pt-20 flex">
+  <!-- Left Sidebar (Navigation) -->
+  <aside class="w-[15%] bg-white shadow-lg p-4 hidden lg:block">
+    <h2 class="font-bold text-lg mb-4">Menu</h2>
+    <ul>
+      <li class="mb-2"><a href="{% url 'feeds' %}" class="text-gray-700 hover:text-blue-500">Home</a></li>
+      <li class="mb-2"><a href="{% url 'profile' user.id %}" class="text-gray-700 hover:text-blue-500">Profile</a></li>
+      <li class="mb-2"><a href="#" class="text-gray-700 hover:text-blue-500">Messages</a></li>
+      <li class="mb-2"><a href="{% url 'delete_acc' user.id %}" class="text-gray-700 hover:text-blue-500">Settings</a></li>
+    </ul>
+  </aside>
+
+  <!-- Search Results Section -->
+  <section class="flex-1 mx-4 scrollable-content">
+    <h2 class="text-2xl font-bold mb-4">Search Results for "<span class="text-blue-600">{{ query }}</span>"</h2>
+
+    <!-- User Results -->
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-4">
+      <h3 class="text-xl font-bold mb-4">Users</h3>
+      <div class="space-y-4">
+        {% for profile in user_result %}
+        <div class="flex justify-between items-center">
+          <!-- Profile Picture -->
+          <div class="flex">
+            {% if profile.profile_pic %}
+            <img src="{{ profile.profile_pic.url }}" alt="User" class="rounded-full w-12 h-12">
+          {% else %}
+            <img src="{{ profile.get_profile_picture }}" alt="User" class="rounded-full w-12 h-12">
+          {% endif %}
+          <div class="ml-4">
+            <!-- Username -->
+            <p class="font-bold">{{ profile.user.username }}</p>
+            <!-- Email -->
+            <p class="text-sm text-gray-500">{{ profile.user.email }}</p>
+          </div>
+          </div>
+          <!-- Follow Button -->
+          {% if request.user != profile.user %}
+          <div class="flex space-x-4">
+            <form method="post" action="{% url 'follow_unfollow' profile.user.id %}">
+              {% csrf_token %}
+              <button type="submit" name="action" value="follow" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                {% if request.user in profile.user.followers.all %} disabled class="opacity-50 cursor-not-allowed" {% endif %}>
+                Follow
+              </button>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No users found.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Post Results -->
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-4">
+      <h3 class="text-xl font-bold mb-4">Posts</h3>
+      <div class="space-y-4">
+        {% for post in post_result %}
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="flex items-center mb-2">
+            {% if post.author.profile.profile_pic %}
+            <img src="{{ post.author.profile.profile_pic.url }}" alt="User" class="rounded-full" width="60">
+            {% endif %}
+            <div class="ml-2">
+              <p class="font-bold">{{ post.author.username }}</p>
+              <p class="text-sm text-gray-500">{{ post.created_at | timesince }} ago</p>
+            </div>
+          </div>
+
+          <p class="text-gray-700 mb-2">{{ post.content }}</p>
+          
+          {% if post.post_img %}
+          <img src="{{ post.post_img.url }}" alt="Post Image" class="w-full rounded-lg mb-2">
+          {% endif %}
+            
+          <div class="flex items-center mb-4 justify-between">
+            <div class="flex">
+              <form action="{% url 'like_post' post.id %}" method="POST">
+                {% csrf_token %}
+                <button class="flex items-center text-gray-500 hover:text-blue-500">
+                  {% if request.user in post.likes.all %}
+                  <span class="mr-2 text-red-500">👍</span> {{ post.likes.count }} Likes
+                  {% else %}
+                  <span class="mr-2 text-black-300">👍</span> {{ post.likes.count }} Likes
+                  {% endif %}
+                </button>
+              </form>
+              <button class="ml-4 flex items-center text-gray-500 hover:text-blue-500">
+                <span class="mr-2">💬</span> {{ post.comments.count }} Comments
+              </button>
+            </div>
+            <div>
+              {% if request.user == post.author %}
+              <a href="{% url 'edit_post' post.id %}" class="mr-2 text-gray-500">Edit</a>
+              <a href="{% url 'delete_post' post.id %}" class="mr-2 text-gray-500">Delete</a>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Comment Box -->
+          <div class="mb-4">
+            <form action="{% url 'add_comment' post.id %}" method="post">
+              {% csrf_token %}
+              <textarea name="comment" placeholder="Write a comment..." class="w-full p-2 border rounded-lg"></textarea>
+              <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Comment</button>
+            </form>
+          </div>
+
+          <!-- Comments -->
+          <div class="space-y-2">
+            {% for comment in post.comments.all %}
+            <div class="flex items-center">
+              <img src="{{ comment.author.profile.profile_pic.url }}" alt="User" class="rounded-full" width="40">
+              <div class="ml-2">
+                <p class="font-bold"><a href="{% url 'profile' comment.author.id %}">{{ comment.author.username }}</a> 
+                  <span class="text-sm text-gray-500">{{ comment.created_at | timesince }} ago</span>
+                </p>
+                <p class="text-sm text-gray-500">{{ comment.content }}</p>
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500">No comments yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No posts found.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  
+  <!-- Right Sidebar (Friends List) -->
+  <div class="w-[30%] bg-white shadow-lg p-4 hidden lg:block">
+    <h2 class="font-bold text-lg mb-4">Friends</h2>
+    <div class="space-y-2">
+      {% for follower in followers %}
+      <div class="flex items-center p-4 rounded-sm shadow-md m-2">
+        <a href="{% url 'profile' follower.follower.id %}" class="flex items-center text-gray-500 hover:text-blue-300 w-12 h-12">
+          {% if follower.follower.profile.profile_pic %}
+          <img src="{{ follower.follower.profile.profile_pic.url }}" alt="Friend" class="rounded-full w-12 h-12">
+          {% endif %}
+          <p class="ml-2">{{ follower.follower.username }}</p>
+        </a>
+      </div>
+      {% empty %}
+      <p class="text-gray-500">No friends found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+
+{% include 'mobile.html' %}
+{% endblock content %}
