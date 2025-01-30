@@ -61,7 +61,7 @@ MIDDLEWARE = [
 # Allow all hosts for now
 CSRF_TRUSTED_ORIGINS = [
     'https://linksphere-2nos.onrender.com',
-    'localhost', '127.0.0.1'  
+    'localhost', 'http://127.0.0.1:8000/'  
 ]
 SECURE_SSL_REDIRECT = True
 
