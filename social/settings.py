@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-vobv@@@cli*x=p8^29)$fu_npt8aq8z^s0=v3cd#(7ya=f#+1*
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'https://linksphere-2nos.onrender.com',
+    'linksphere-2nos.onrender.com',
     'localhost', '127.0.0.1'
 ]
 
