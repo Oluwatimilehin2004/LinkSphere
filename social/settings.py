@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-vobv@@@cli*x=p8^29)$fu_npt8aq8z^s0=v3cd#(7ya=f#+1*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'https://linksphere-2nos.onrender.com',
+    'localhost', '127.0.0.1'
+]
 
 
 # Application definition
@@ -56,7 +59,11 @@ MIDDLEWARE = [
 ]
 
 # Allow all hosts for now
-ALLOWED_HOSTS = ['linksphere-2nos.onrender.com', 'localhost', '127.0.0.1']  # Replace with your Render domain when deployed
+CSRF_TRUSTED_ORIGINS = [
+    'https://linksphere-2nos.onrender.com',
+    'localhost', '127.0.0.1'  
+]
+SECURE_SSL_REDIRECT = True
 
 
 ROOT_URLCONF = 'social.urls'
