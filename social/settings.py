@@ -60,8 +60,9 @@ MIDDLEWARE = [
 
 # Allow all hosts for now
 CSRF_TRUSTED_ORIGINS = [
-    'https://linksphere-2nos.onrender.com',
-    'localhost', 'http://127.0.0.1:8000/'  
+    'http://localhost:8000',  # Adjust port if needed
+    'https://localhost:8000', # If you're using HTTPS locally
+    'https://linksphere-2nos.onrender.com',  # Your Render app URL
 ]
 SECURE_SSL_REDIRECT = True
 
