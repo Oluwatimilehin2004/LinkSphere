@@ -86,7 +86,7 @@ ASGI_APPLICATION = 'social.asgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('98ae5189fd50da5ad6b5856fecfdacd1'))
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 
