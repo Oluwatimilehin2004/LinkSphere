@@ -56,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 # Allow all hosts for now
-ALLOWED_HOSTS = ['*']  # Replace with your Render domain when deployed
+ALLOWED_HOSTS = ['linksphere-2nos.onrender.com', 'localhost', '127.0.0.1']  # Replace with your Render domain when deployed
 
 
 ROOT_URLCONF = 'social.urls'
