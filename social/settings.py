@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-vobv@@@cli*x=p8^29)$fu_npt8aq8z^s0=v3cd#(7ya=f#+1*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'linksphere-2nos.onrender.com',
@@ -87,7 +87,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'social.wsgi.application'
-# ASGI_APPLICATION = 'social.asgi.application'
+ASGI_APPLICATION = 'social.asgi.application'
 
 
 # Database

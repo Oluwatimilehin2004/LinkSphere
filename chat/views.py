@@ -9,4 +9,4 @@ from django.shortcuts import render
 def chat_room(request, recipient_username=None):
     return render(request, 'room.html', {
         'recipient_username': recipient_username
-    })
+    }) 
