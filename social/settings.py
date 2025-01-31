@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -169,10 +170,10 @@ CHANNEL_LAYERS = {
 }
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = 'AKIAZPPGABQYDD7YPQOF'
-AWS_SECRET_ACCESS_KEY = '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'  
+AWS_ACCESS_KEY_ID = 'AKIAZPPGABQYBS52GGNR'
+AWS_SECRET_ACCESS_KEY = '/QTibRtHqtaq28E2pNLqi7jM3q0/3yksGLEfj40L'  
 AWS_STORAGE_BUCKET_NAME = 'linksphere-media'
-AWS_S3_REGION_NAME = 'us-east-1'  # e.g., 'us-east-1'
+AWS_S3_REGION_NAME = 'eu-north-1'  # e.g., 'us-east-1'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
