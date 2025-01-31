@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]  
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
@@ -169,10 +170,12 @@ CHANNEL_LAYERS = {
 }
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = 'AKIAZPPGABQYBS52GGNR'
-AWS_SECRET_ACCESS_KEY = '/QTibRtHqtaq28E2pNLqi7jM3q0/3yksGLEfj40L'  
-AWS_STORAGE_BUCKET_NAME = 'linksphere-media'
-AWS_S3_REGION_NAME = 'eu-north-1'  # e.g., 'us-east-1'
+AWS_ACCESS_KEY_ID = 'AKIAZPPGABQYEM6C4MOY'
+AWS_SECRET_ACCESS_KEY = 'kS8Vt0V+daNxoFOitg+47quhS22mmfSPkH35WGFG'  
+AWS_STORAGE_BUCKET_NAME = 'linksphere-media-bucket'
+AWS_S3_REGION_NAME = 'eu-north-1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_S3_DEFAULT_ACL = None
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
