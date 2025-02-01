@@ -137,14 +137,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  
-
-
-
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS= [BASE_DIR / 'static']
+
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -169,12 +172,24 @@ CHANNEL_LAYERS = {
 }
 
 
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = 'AKIAZPPGABQYBI5GOWNE'
 AWS_SECRET_ACCESS_KEY = '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'  
+
+
 AWS_STORAGE_BUCKET_NAME = 'linksphere-media-bucket-1'
 AWS_S3_FILE_OVERWRITE = False
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage"
+    },
+
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage"
+    },
+}
